@@ -1,7 +1,19 @@
 import React from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../firebase";
 
 function LoginModel({ open, onClose }) {
+
+    const handleGoogleAuth = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider)
+            console.log(result)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
   return (
     <AnimatePresence>
       {open && (
@@ -49,6 +61,7 @@ function LoginModel({ open, onClose }) {
                 </h2>
 
                 <motion.button
+                  onClick={handleGoogleAuth}
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
                   className="group relative w-full h-13 rounded-xl bg-white text-black font-semibold shadow-xl overflow-hidden"
