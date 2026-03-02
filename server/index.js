@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import authRouter from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import userRouter from './routes/user.routes.js';
 
 
 
@@ -18,6 +19,7 @@ app.use(cors({
     credentials: true, // Allow cookies to be sent with requests
 }))
 app.use("/api/auth", authRouter)
+app.use("/api/user", userRouter)
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
