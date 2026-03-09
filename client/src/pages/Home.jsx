@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import LoginModel from "../components/LoginModel";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Coins } from "lucide-react";
+import axios from "axios";
+import { serverUrl } from "../App";
+import { setUserData } from "../redux/userSlice";
 
 const Home = () => {
   const highlights = [
@@ -14,6 +17,20 @@ const Home = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const { userData } = useSelector((state) => state.user);
   const [openProfile, setOpenProfile] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    try {
+        console.log("logout")
+      await axios.get(`${serverUrl}/api/auth/logout`, {
+        withCredentials: true,
+      });
+      dispatch(setUserData(null));
+      setOpenProfile(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="relative min-h-screen bg-[#040404] text-white overflow-hidden">
@@ -85,9 +102,15 @@ const Home = () => {
                           <span className="font-semibold">+</span>
                         </button>
 
-                        <button className="w-full px-4 py-3 text-left text-sm hover:bg-white/5">Dashboard</button>
-                        <button className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-white/5">Logout</button>
-
+                        <button className="w-full px-4 py-3 text-left text-sm hover:bg-white/5">
+                          Dashboard
+                        </button>
+                        <button
+                          className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-white/5"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </button>
                       </motion.div>
                     </>
                   )}

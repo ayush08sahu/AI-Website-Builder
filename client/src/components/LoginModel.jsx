@@ -19,7 +19,11 @@ const dispatch = useDispatch()
                 avatar: result.user.photoURL
             },{ withCredentials: true })
             console.log(data)
-            dispatch(setUserData(data))
+            const meResult = await axios.get(`${serverUrl}/api/user/me`, {
+                withCredentials: true,
+            })
+            dispatch(setUserData(meResult.data))
+            onClose()
         } catch (error) {
             console.log(error)
         }
