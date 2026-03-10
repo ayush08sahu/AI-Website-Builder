@@ -6,6 +6,7 @@ import { Coins } from "lucide-react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { setUserData } from "../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const highlights = [
@@ -18,10 +19,11 @@ const Home = () => {
   const { userData } = useSelector((state) => state.user);
   const [openProfile, setOpenProfile] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-        console.log("logout")
+      console.log("logout");
       await axios.get(`${serverUrl}/api/auth/logout`, {
         withCredentials: true,
       });
@@ -102,7 +104,10 @@ const Home = () => {
                           <span className="font-semibold">+</span>
                         </button>
 
-                        <button className="w-full px-4 py-3 text-left text-sm hover:bg-white/5">
+                        <button
+                          className="w-full px-4 py-3 text-left text-sm hover:bg-white/5"
+                          onClick={() => navigate("/dashboard")}
+                        >
                           Dashboard
                         </button>
                         <button
@@ -149,8 +154,12 @@ const Home = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeInOut", delay: 0.4 }}
         >
-          <button className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl font-semibold hover:opacity-90 transition-opacity">
-            Get Started
+          <button
+            className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl font-semibold hover:opacity-90 transition-opacity"
+            onClick={() => navigate("/dashboard")}
+            onClickCapture={() => !userData && setOpenLogin(true)}
+          >
+            {userData ? "Go to Dashboard" : "Get Started"}
           </button>
         </motion.div>
       </section>
