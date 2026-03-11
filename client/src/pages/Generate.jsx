@@ -2,9 +2,22 @@ import { ArrowLeft } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
+import { useState } from "react";
+import axios from "axios";
+import { serverUrl } from './../App';
 
 function Generate() {
   const navigate = useNavigate();
+  const [prompt, setPrompt] = useState("");
+
+  const handelGenerateWebsite = async () => {
+    try {
+      const result = await axios.post(`${serverUrl}/api/website/generate`, { prompt }, { withCredentials: true });
+      console.log(result)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <div className="min-h-screen bg-linear-to-br from-[#050505] via-[#0b0b0b] to-[#050505] text-white">
       <div className="sticky top-0 z-40 backdrop-blur-xl bg-black/50 border-b border-white/10">
@@ -44,8 +57,8 @@ function Generate() {
           <h1 className="text-xl font-semibold mb-2">Describe your website</h1>
           <div className="relative">
             <textarea
-              name=""
-              id=""
+              onChange={(e)=>setPrompt(e.target.value)}
+              value={prompt}
               placeholder="Describe your website in detail..."
               className="w-full h-56 p-6 rounded-3xl bg-black/60 border border-white/10 outline-none resize-none text-sm leading-relaxed focus:ring-2 focus:ring-white/20"
             ></textarea>
@@ -55,6 +68,7 @@ function Generate() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={handelGenerateWebsite}
             className="bg-white text-black hover:bg-zinc-200 font-semibold py-3 px-6 rounded-full transition"
           >
             Generate Website

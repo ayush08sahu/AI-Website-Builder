@@ -5,7 +5,7 @@ import useGetCurrentUser from './hooks/useGetCurrentUser'
 import { useSelector } from 'react-redux'
 import Generate from './pages/Generate'
 import Dashboard from './pages/Dashboard'
-export const serverUrl = import.meta.env.VITE_SERVER_URL
+export const serverUrl = "http://localhost:3000";
 
 const App = () => {
   useGetCurrentUser()
