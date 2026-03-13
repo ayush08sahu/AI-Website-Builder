@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import Website from "../models/website.model.js";
 import extractJson from "../utils/extractJson.js";
 
+
 const masterPrompt = `
 YOU ARE A PRINCIPAL FRONTEND ARCHITECT
 AND A SENIOR UI/UX ENGINEER
@@ -198,3 +199,18 @@ export const generateWebsite = async (req,res) => {
     }
 }
 
+export const getWebsiteById = async (req,res) => {
+    try {
+        const website = await Website.findOne({
+            _id: req.params.id,
+            user: req.user._id
+        })
+        if (!website) {
+            return res.status(404).json({ message: "Website not found" });
+        }
+        return res.status(200).json(website);
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: `Error fetching website: ${error.message}` });
+    }
+}
