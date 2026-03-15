@@ -76,6 +76,7 @@ const Home = () => {
                       `https://ui-avatars.com/api/?name=${userData.name}`
                     }
                     alt=""
+                    referrerPolicy="no-referrer"
                   />
                 </button>
                 <AnimatePresence>
