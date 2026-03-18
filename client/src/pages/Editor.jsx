@@ -242,7 +242,7 @@ function WebsiteEditor() {
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            className="flexed inset-y-0 right-0 w-full lg:w-[45%] z-[9999] bg-[#1e1e1e] flex flex-col"
+            className="fixed inset-y-0 right-0 w-full lg:w-[45%] z-[9999] bg-[#1e1e1e] flex flex-col"
           >
             <div className="h-12 px-4 flex justify-between items-center border-b border-white/10 bg-[#1e1e1e]">
               <span className="text-sm font-medium">index.html</span>
