@@ -1,4 +1,4 @@
-import { ArrowLeft, Rocket, Share2 } from "lucide-react";
+import { ArrowLeft, Check, Rocket, Share2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useSelector } from "react-redux";
@@ -12,6 +12,33 @@ function Dashboard() {
   const [websites, setWebsites] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [copiedId, setCopiedId] = useState(null);
+
+  const handleDeploy = async (id) => {
+    try {
+      const result = await axios.get(`${serverUrl}/api/website/deploy/${id}`, {
+        withCredentials: true,
+      });
+      window.open(`${result.data.url}`, "_blank");
+      setWebsites((prev) =>
+        prev.map((w) =>
+          w._id === id
+            ? { ...w, deployedUrl: result.data.url, deployed: true }
+            : w,
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCopy = async (site) => {
+    await navigator.clipboard.writeText(site.deployedUrl);
+    setCopiedId(site._id);
+    setTimeout(() => {
+      setCopiedId(null);
+    }, 2000);
+  };
 
   useEffect(() => {
     const handleGetAllWebsites = async () => {
@@ -76,42 +103,69 @@ function Dashboard() {
         )}
         {!loading && !error && websites?.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-            {websites.map((w, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -6 }}
-                className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:bg-white/10 transition flex flex-col"
-              >
-                <div className="relative h-40 bg-black cursor-pointer">
-                  <iframe
-                    srcDoc={w.latestCode}
-                    className="absolute inset-0 w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white"
-                  />
-                  <div className="absolute inset-0 bg-black/30" />
-                </div>
-                <div className="p-5 flex flex-col gap-4 flex-1">
-                  <h2 className="text-base line-clamp-2 font-semibold">
-                    {w.title}
-                  </h2>
-                  <p className="text-xs text-zinc-400">
-                    Last Updated {""}
-                    {new Date(w.updatedAt).toLocaleString()}
-                  </p>
-                  {!w.deployed ? (
-                    <button className="mt-auto flex items-center justify-center gap-2 text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 hover:scale-105 py-2 px-4 rounded-xl transition">
-                      <Rocket size={18} /> Deploy
-                    </button>
-                  ) : (
-                    <button className="mt-auto flex items-center justify-center gap-2 text-sm font-semibold bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105 py-2 px-4 rounded-xl transition">
-                      <Share2 /> Share Link
-                    </button>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+            {websites.map((w, i) => {
+              const copied = copiedId === w._id;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  whileHover={{ y: -6 }}
+                  onClick={()=>navigate(`/editor/${w._id}`)}
+                  className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:bg-white/10 transition flex flex-col"
+                >
+                  <div className="relative h-40 bg-black cursor-pointer">
+                    <iframe
+                      srcDoc={w.latestCode}
+                      className="absolute inset-0 w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white"
+                    />
+                    <div className="absolute inset-0 bg-black/30" />
+                  </div>
+                  <div className="p-5 flex flex-col gap-4 flex-1">
+                    <h2 className="text-base line-clamp-2 font-semibold">
+                      {w.title}
+                    </h2>
+                    <p className="text-xs text-zinc-400">
+                      Last Updated {""}
+                      {new Date(w.updatedAt).toLocaleString()}
+                    </p>
+                    {!w.deployed ? (
+                      <button
+                        className="mt-auto flex items-center justify-center gap-2 text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 hover:scale-105 py-2 px-4 rounded-xl transition"
+                        onClick={() => handleDeploy(w._id)}
+                      >
+                        <Rocket size={18} /> Deploy
+                      </button>
+                    ) : (
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => handleCopy(w)}
+                        className={`mt-auto flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all
+                          ${
+                            copied
+                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                              : "bg-white/10 hover:bg-white/20 border border-white/10"
+                          }
+                          `}
+                      >
+                        {copied ? (
+                          <>
+                            <Check size={14} />
+                            Link Copied
+                          </>
+                        ) : (
+                          <>
+                            <Share2 size={14} />
+                            Share Link
+                          </>
+                        )}
+                      </motion.button>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>

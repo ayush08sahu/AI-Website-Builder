@@ -185,8 +185,8 @@ export const generateWebsite = async (req, res) => {
       title: prompt.slice(0, 60),
       latestCode: parsed.code,
       conversation: [
-        { role: "ai", content: parsed.message },
         { role: "user", content: prompt },
+        { role: "ai", content: parsed.message }
       ],
     });
     user.credits -= 50;
@@ -304,3 +304,43 @@ export const getAll = async (req, res) => {
       .json({ message: `Error fetching websites: ${error.message}` });
   }
 };
+
+export const deploy = async (req,res) => {
+  try {
+     const website = await Website.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+    if (!website) {
+      return res.status(404).json({ message: "Website not found" });
+    }
+    if(!website.slug){
+      website.slug = website.title.toLowerCase().replace(/[^a-zA-Z0-9]/g, '').slice(0, 60)+website._id.toString().slice(-5);
+    }
+    website.deployed = true
+    website.deployedUrl = `${process.env.FRONTEND_URL}/site/${website.slug}`
+    await website.save()
+    return res.status(200).json({
+      url : website.deployedUrl
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ message: `Error deploying website: ${error.message}` });
+  }
+}
+
+export const getBySlug = async (req,res) => {
+  try {
+     const website = await Website.findOne({
+      slug: req.params.slug,
+      user: req.user._id,
+    });
+    if (!website) {
+      return res.status(404).json({ message: "Website not found" });
+    }
+    return res.status(200).json(website);
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ message: `Error fetching website: ${error.message}` });
+  }
+}
