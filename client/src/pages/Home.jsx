@@ -45,11 +45,11 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-lg font-semibold">GenWeb.ai</div>
           <div className="flex items-center gap-5">
-            <div className="hidden md:inline text-sm text-zinc-400 hover:text-white cursor-pointer">
+            <div className="hidden md:inline text-sm text-zinc-400 hover:text-white cursor-pointer" onClick={()=>navigate("/pricing")}>
               Pricing
             </div>
             {userData && (
-              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm cursor-pointer hover:bg-white/10 transition">
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm cursor-pointer hover:bg-white/10 transition" onClick={()=>navigate("/pricing")}>
                 <Coins size={14} className="text-yellow-400" />
                 <span className="text-zinc-300">Credits</span>
                 <span>{userData.credits}</span>
