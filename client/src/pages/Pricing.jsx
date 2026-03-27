@@ -1,7 +1,10 @@
 import { ArrowLeft, Check, Coins } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { serverUrl } from "./../App";
 
 const plans = [
   {
@@ -47,6 +50,32 @@ const plans = [
 
 function Pricing() {
   const navigate = useNavigate();
+  const { userData } = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(null);
+  const handleBuy = async (planKey) => {
+    if (!userData) {
+      navigate("/");
+      return;
+    }
+    if (planKey == "free") {
+      navigate("/dashboard");
+      return;
+    }
+    setLoading(planKey);
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/billing`,
+        {
+          planType: planKey,
+        },
+        { withCredentials: true },
+      );
+      window.location.href = result.data.sessionUrl;
+    } catch (error) {
+      console.log(error);
+      setLoading(null);
+    }
+  };
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#050505] text-white px-x6 pt-16 pb-24">
       <div className="absolute inset-0 pointer-events-none">
@@ -115,6 +144,8 @@ function Pricing() {
               ))}
             </ul>
             <motion.button
+              disabled={loading}
+              onClick={() => handleBuy(p.key)}
               whileTap={{ scale: 0.96 }}
               className={`w-full py-3 rounded-xl font-semibold transition
                         ${
@@ -124,7 +155,7 @@ function Pricing() {
                         } disabled:opacity-60
                         `}
             >
-              {p.button}
+              {loading === p.key ? "Redirecting..." : p.button}
             </motion.button>
           </motion.div>
         ))}

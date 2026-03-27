@@ -7,6 +7,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { setUserData } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Home = () => {
   const highlights = [
@@ -18,6 +19,7 @@ const Home = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const { userData } = useSelector((state) => state.user);
   const [openProfile, setOpenProfile] = useState(false);
+  const [websites, setWebsites] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -34,6 +36,21 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    if (!userData) return;
+    const handleGetAllWebsites = async () => {
+      try {
+        const result = await axios.get(`${serverUrl}/api/website/get-all`, {
+          withCredentials: true,
+        });
+        setWebsites(result.data || []);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    handleGetAllWebsites();
+  }, [userData]);
+
   return (
     <div className="relative min-h-screen bg-[#040404] text-white overflow-hidden">
       <motion.div
@@ -45,11 +62,17 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-lg font-semibold">GenWeb.ai</div>
           <div className="flex items-center gap-5">
-            <div className="hidden md:inline text-sm text-zinc-400 hover:text-white cursor-pointer" onClick={()=>navigate("/pricing")}>
+            <div
+              className="hidden md:inline text-sm text-zinc-400 hover:text-white cursor-pointer"
+              onClick={() => navigate("/pricing")}
+            >
               Pricing
             </div>
             {userData && (
-              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm cursor-pointer hover:bg-white/10 transition" onClick={()=>navigate("/pricing")}>
+              <div
+                className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm cursor-pointer hover:bg-white/10 transition"
+                onClick={() => navigate("/pricing")}
+              >
                 <Coins size={14} className="text-yellow-400" />
                 <span className="text-zinc-300">Credits</span>
                 <span>{userData.credits}</span>
@@ -165,24 +188,55 @@ const Home = () => {
         </motion.div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 pb-32">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {highlights.map((h, i) => (
-            <motion.div
-              key={i}
-              className="rounded-2xl bg-white/5 border border-white/10 p-8"
-              initial={{ y: 40, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-            >
-              <h1 className="text-xl font-semibold mb-3">{h}</h1>
-              <p className="text-sm text-zinc-400">
-                GenWeb.ai builds real websites - clean code, animation,
-                responsiveness and scalable structure.
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {!userData && (
+        <section className="max-w-7xl mx-auto px-6 pb-32">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {highlights.map((h, i) => (
+              <motion.div
+                key={i}
+                className="rounded-2xl bg-white/5 border border-white/10 p-8"
+                initial={{ y: 40, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+              >
+                <h1 className="text-xl font-semibold mb-3">{h}</h1>
+                <p className="text-sm text-zinc-400">
+                  GenWeb.ai builds real websites - clean code, animation,
+                  responsiveness and scalable structure.
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {userData && websites?.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 pb-32">
+          <h3 className="text-2xl font-semibold mb-6">Your Websites</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {websites.slice(0,3).map((w,i)=>(
+              <motion.div
+                key={w._id}
+                whileHover={{ y: -6 }}
+                onClick={()=> navigate(`/editor/${w._id}`)}
+                className="coursor-pointer rounded-2xl bg-white/5 border border-white/10 p-8 overflow-hidden"
+              >
+                <div className="h-40 bg-black">
+                  <iframe srcDoc={w.latestCode} className="w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white"/>
+                </div>
+                <div className="p-4">
+                      <h2 className="text-base line-clamp-2 font-semibold">
+                      {w.title}
+                    </h2>
+                    <p className="text-xs text-zinc-400">
+                      Last Updated {""}
+                      {new Date(w.updatedAt).toLocaleString()}
+                    </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <footer className="border-t border-white/10 py-10 text-center text-sm text-zinc-500">
         &copy; {new Date().getFullYear()} GenWeb.ai All rights reserved.
