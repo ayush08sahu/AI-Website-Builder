@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard'
 import WebsiteEditor from './pages/Editor'
 import LiveSite from './pages/LiveSite'
 import Pricing from './pages/Pricing'
-export const serverUrl = "http://localhost:3000";
+export const serverUrl = "https://ai-website-builder-tkmc.onrender.com";
 
 const App = () => {
   useGetCurrentUser()
