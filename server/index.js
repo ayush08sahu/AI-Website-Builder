@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Update with your frontend URL
+    origin: "https://ai-website-builder-1-49g7.onrender.com/", // Update with your frontend URL
     credentials: true, // Allow cookies to be sent with requests
   }),
 );
