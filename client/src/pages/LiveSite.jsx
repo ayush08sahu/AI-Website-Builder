@@ -11,8 +11,7 @@ function LiveSite() {
     const handleGetWebsite = async () => {
       try {
         const result = await axios.get(
-          `${serverUrl}/api/website/get-by-slug/${id}`,
-          { withCredentials: true });
+          `${serverUrl}/api/website/get-by-slug/${id}`);
         setHtml(result.data.latestCode);
         // console.log(result);
       } catch (error) {
