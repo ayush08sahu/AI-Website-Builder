@@ -29,5 +29,6 @@ app.use("/api/billing", billingRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  res.send("API is running...");
   connectDB();
 });
