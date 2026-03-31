@@ -27,8 +27,11 @@ app.use("/api/user", userRouter);
 app.use("/api/website", websiteRouter);
 app.use("/api/billing", billingRouter);
 
-app.listen(port, (req,res) => {
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-  res.send("API is running...");
   connectDB();
+});
+
+app.get("/", (req, res) => {
+  res.send("API is running...");
 });
