@@ -14,13 +14,8 @@ export const googleAuth = async (req,res) => {
         const token = await jwt.sign({ id: user._id },process.env.JWT_SECRET, { expiresIn: "30d" })
         res.cookie("token", token, {
             httpOnly: true,
-<<<<<<< HEAD
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-=======
-            secure: true, // Set to true in production with HTTPS
-            sameSite: "none",
->>>>>>> 39d33d36ee968f29e7fbfdda8ec02d4073320937
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
         })
         return res.status(200).json({ message: "User authenticated", user, token })
@@ -34,13 +29,8 @@ export const logout = async (req,res) => {
     try {
         res.clearCookie("token", {
             httpOnly: true,
-<<<<<<< HEAD
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-=======
-            secure: true, // Set to true in production with HTTPS
-            sameSite: "none",
->>>>>>> 39d33d36ee968f29e7fbfdda8ec02d4073320937
         })
         return res.status(200).json({ message: "User logged out" })
     } catch (error) {

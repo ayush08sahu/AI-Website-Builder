@@ -19,11 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-<<<<<<< HEAD
-    origin: process.env.FRONTEND_URL || "http://localhost:5173", // Update with your frontend URL
-=======
-    origin: "https://ai-website-builder-1-49g7.onrender.com", // Update with your frontend URL
->>>>>>> 39d33d36ee968f29e7fbfdda8ec02d4073320937
+    origin: process.env.FRONTEND_URL || "https://ai-website-builder-1-49g7.onrender.com", // Update with your frontend URL
     credentials: true, // Allow cookies to be sent with requests
   }),
 );
@@ -35,8 +31,4 @@ app.use("/api/billing", billingRouter);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   connectDB();
-});
-
-app.get("/", (req, res) => {
-  res.send("API is running...");
 });
