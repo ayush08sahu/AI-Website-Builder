@@ -112,10 +112,11 @@ function Dashboard() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
                   whileHover={{ y: -6 }}
-                  onClick={()=>navigate(`/editor/${w._id}`)}
                   className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:bg-white/10 transition flex flex-col"
                 >
-                  <div className="relative h-40 bg-black cursor-pointer">
+                  <div className="relative h-40 bg-black cursor-pointer"
+                      onClick={()=>navigate(`/editor/${w._id}`)}
+                    >
                     <iframe
                       srcDoc={w.latestCode}
                       className="absolute inset-0 w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white"
