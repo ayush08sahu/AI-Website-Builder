@@ -13,6 +13,7 @@ import { stripeWebhook } from "./controllers/stripeWebhook.js";
 const app = express();
 app.set("trust proxy", 1);
 app.post("/api/stipe/webhook", express.raw({ type: "application/json" }), stripeWebhook);
+app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 const port = process.env.PORT || 5000;
 
 app.use(express.json());

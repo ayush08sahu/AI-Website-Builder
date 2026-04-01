@@ -1,7 +1,7 @@
 import stripe from "../config/stripe.js";
 import User from "../models/user.model.js";
 
-export const stripeWebhook = async (req,res) => {
+export const stripeWebhook = async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
     try {
@@ -20,9 +20,9 @@ export const stripeWebhook = async (req,res) => {
         const userId = session.metadata.userId;
         const credits = Number(session.metadata.credits);
         const plan = session.metadata.plan;
-        await User.findOneAndUpdate(userId, {
+        await User.findByIdAndUpdate(userId, {
             $inc: { credits },
-            plan
+            $set: { plan }
         })
     }
 
