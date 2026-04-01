@@ -11,6 +11,7 @@ import billingRouter from "./routes/billing.routes.js";
 import { stripeWebhook } from "./controllers/stripeWebhook.js";
 
 const app = express();
+app.set("trust proxy", 1);
 app.post("/api/stipe/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 const port = process.env.PORT || 5000;
 
@@ -18,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Update with your frontend URL
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // Update with your frontend URL
     credentials: true, // Allow cookies to be sent with requests
   }),
 );
